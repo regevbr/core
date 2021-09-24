@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Iterable
 import concurrent.futures
 from datetime import datetime, timedelta
 import logging
@@ -9,7 +10,7 @@ import queue
 import sqlite3
 import threading
 import time
-from typing import Any, Callable, Iterable, NamedTuple
+from typing import Any, Callable, NamedTuple
 
 from sqlalchemy import create_engine, event as sqlalchemy_event, exc, func, select
 from sqlalchemy.exc import SQLAlchemyError
@@ -578,9 +579,9 @@ class Recorder(threading.Thread):
         self.queue.put(StatisticsTask(start))
 
     @callback
-    def async_external_statistics(self, metadata, statistics):
+    def async_external_statistics(self, metadata, stats):
         """Schedule external statistics."""
-        self.queue.put(ExternalStatisticsTask(metadata, statistics))
+        self.queue.put(ExternalStatisticsTask(metadata, stats))
 
     @callback
     def _async_setup_periodic_tasks(self):
